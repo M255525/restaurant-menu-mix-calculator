@@ -233,14 +233,46 @@ footer .disclaimer a{color:#F2C79A;}
   #pdfWatermark{position:fixed !important;top:0;left:0;width:100%;height:100%;z-index:9999;display:flex !important;align-items:center;justify-content:center;pointer-events:none;}
   #pdfWatermark img{width:42%;min-width:200px;max-width:380px;}
   #printReportRoot{padding:24px;font-family:var(--font-body);color:#2B211C;}
-  .pr-section{margin-bottom:22px;}
-  .pr-section h1{font-size:1.3rem;}
-  .pr-section h2{font-size:1.05rem;border-bottom:2px solid #2B211C;padding-bottom:4px;}
-  .pr-table{width:100%;min-width:0;border-collapse:collapse;font-size:.8rem;}
-  .pr-table td,.pr-table th{border:1px solid #ccc;padding:5px 8px;color:#2B211C;background:none;}
-  .pr-bad td{color:#C23B32;}
-  .pr-good td{color:#2F7D55;}
-  .pr-meta{font-size:.8rem;color:#555;}
+  @page{size:A4;margin:14mm 12mm;}
+  html,body{background:#fff !important;}
+  body.has-marquee{padding-top:0 !important;}
+  #printReportRoot *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  #printReportRoot{padding:0 !important;font-size:12px;line-height:1.55;}
+  .pr-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;border-bottom:3px solid #2A1C17;padding-bottom:8px;margin-bottom:14px;}
+  .pr-head h1{font-size:20px;margin:0 0 2px;}
+  .pr-head .pr-store{font-size:13px;font-weight:700;color:#B4532A;}
+  .pr-verdict{border-radius:8px;padding:10px 14px;margin:0 0 14px;font-weight:700;font-size:13px;border:1px solid #ccc;}
+  .pr-verdict.good{background:#E5F2EA;border-color:#2F7D55;color:#2F7D55;}
+  .pr-verdict.warn{background:#FBF1DC;border-color:#B98A1F;color:#7A5A12;}
+  .pr-verdict.bad{background:#FBEAE8;border-color:#C23B32;color:#C23B32;}
+  .pr-verdict span{display:block;font-weight:400;color:#2B211C;font-size:11.5px;margin-top:3px;}
+  .pr-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px;}
+  .pr-kpi{border:1px solid #ddd;border-radius:6px;padding:7px 9px;break-inside:avoid;}
+  .pr-kpi .l{font-size:10px;color:#6A5A50;}
+  .pr-kpi .v{font-size:15px;font-weight:700;font-family:var(--font-mono);}
+  .pr-kpi .s{font-size:9.5px;color:#6A5A50;}
+  .pr-kpi.bad .v{color:#C23B32;}
+  .pr-kpi.good .v{color:#2F7D55;}
+  .pr-section{margin-bottom:16px;break-inside:avoid;}
+  .pr-section.pr-long{break-inside:auto;}
+  .pr-section h2{break-after:avoid;font-size:14px;border-bottom:2px solid #2B211C;padding-bottom:3px;margin:0 0 8px;}
+  .pr-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .pr-table{width:100%;min-width:0;border-collapse:collapse;font-size:11px;}
+  .pr-table thead{display:table-header-group;}
+  .pr-table tr{break-inside:avoid;}
+  .pr-table td,.pr-table th{border:1px solid #ccc;padding:4px 7px;color:#2B211C;background:none;text-align:left;font-weight:400;}
+  .pr-table th{background:#F1E9DD !important;font-weight:700;white-space:nowrap;}
+  .pr-table td.n{text-align:right;font-family:var(--font-mono);white-space:nowrap;}
+  .pr-bar{height:9px;border-radius:4px;background:#EFE6D8;overflow:hidden;min-width:60px;}
+  .pr-bar i{display:block;height:100%;}
+  .pr-bad td{color:#C23B32 !important;}
+  .pr-good td{color:#2F7D55 !important;}
+  .pr-qtag{display:inline-block;padding:1px 7px;border-radius:999px;color:#fff !important;font-size:10px;font-weight:700;}
+  .pr-matrix{display:grid;grid-template-columns:1.15fr 1fr;gap:12px;align-items:start;}
+  .pr-matrix svg{width:100%;height:auto;}
+  .pr-q{border-left:4px solid;padding:3px 8px;margin-bottom:6px;font-size:11px;}
+  .pr-diag{white-space:pre-wrap;font-size:11.5px;border:1px solid #ddd;border-radius:6px;padding:10px 12px;}
+  .pr-meta{font-size:10.5px;color:#555;margin:0;}
   .pr-footer{margin-top:26px;font-size:.76rem;color:#666;border-top:1px solid #ccc;padding-top:10px;}
 }
 
@@ -264,6 +296,7 @@ footer .disclaimer a{color:#F2C79A;}
 <header class="hero">
   <div class="wrap">
     <div class="hero-utility">
+      <button class="hero-util-btn" id="pdfExportBtnTop" type="button">📄 匯出 PDF 報告</button>
       <a class="hero-util-btn" href="manual.html">📖 操作手冊</a>
       <button class="hero-util-btn" id="installBtn" type="button">📲 加入主畫面</button>
     </div>
@@ -363,7 +396,10 @@ footer .disclaimer a{color:#F2C79A;}
 
 <section id="resultsSection">
   <div class="wrap">
-    <h2 class="section-title">結果儀表板</h2>
+    <div class="section-head-row">
+      <h2 class="section-title">結果儀表板</h2>
+      <button class="btn-secondary" id="pdfExportBtnResults" type="button">📄 匯出 PDF 報告</button>
+    </div>
     <div class="verify-box" id="verifyBox" role="status" aria-live="polite">
       <div class="verify-head">
         <span class="verify-title" id="verifyTitle">驗算中…</span>
@@ -459,7 +495,7 @@ footer .disclaimer a{color:#F2C79A;}
       <span>製作：Mark Tsai｜<a href="mailto:tsaimark@gmail.com">tsaimark@gmail.com</a></span>
       <span class="footer-links">
         <img class="visitor-badge" src="https://visitor-badge.laobi.icu/badge?page_id=m255525.restaurantmenumixcalculator" alt="訪客次數" style="vertical-align:middle;height:20px;">
-        <button type="button" id="pdfExportBtn" class="reset-btn">🖨️ 匯出PDF</button>
+        <button type="button" id="pdfExportBtn" class="reset-btn">📄 匯出PDF報告</button>
         <button type="button" id="resetBtn" class="reset-btn">重設為範例一</button>
       </span>
     </div>
@@ -1035,25 +1071,8 @@ var WATERMARK_DATA_URI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAeAAAAE7
   }
 
   /* ---------- 菜單工程矩陣：散佈圖＋圖例＋表 ---------- */
-  function renderMenuEngineering(calc){
+  function buildMeSvg(calc){
     var me = calc.me, items = calc.perProduct;
-    var counts = {star:0, plow:0, puzzle:0, dog:0};
-    items.forEach(function(r){ counts[r.quad]++; });
-    $("meMeta").textContent = items.length
-      ? "人氣門檻：銷量占比 ≥ " + (me.popThreshold*100).toFixed(1) + "%（" + items.length + " 項品項）・獲利力門檻：單份貢獻毛利 ≥ " + fmtMoney(me.avgUnitCM) + "（加權平均）"
-      : "尚未加入任何品項。";
-
-    var legend = $("meLegend");
-    legend.innerHTML = "";
-    QUAD_ORDER.forEach(function(k){
-      var d = QUAD_DEFS[k];
-      var div = document.createElement("div");
-      div.className = "q-card";
-      div.style.borderLeftColor = d.hex;
-      div.innerHTML = '<span class="q-count">' + counts[k] + ' 項</span><div class="q-name" style="color:' + d.hex + ';">' + d.label + '</div><div class="q-axis">' + d.axis + '</div><div class="q-desc">' + d.desc + '</div>';
-      legend.appendChild(div);
-    });
-
     // SVG 散佈圖：x＝銷量占比、y＝單份貢獻毛利；十字線＝兩個門檻
     var W = 560, H = 400, L = 64, R = 18, T = 18, B = 46;
     var pw = W - L - R, ph = H - T - B;
@@ -1101,6 +1120,29 @@ var WATERMARK_DATA_URI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAeAAAAE7
       svg += '<text x="' + (x+dx).toFixed(1) + '" y="' + (y+4).toFixed(1) + '" text-anchor="' + anchor + '" font-size="11" fill="#2B211C">' + escapeHtml(label) + '</text></g>';
     });
     svg += '</svg>';
+    return svg;
+  }
+
+  function renderMenuEngineering(calc){
+    var me = calc.me, items = calc.perProduct;
+    var counts = {star:0, plow:0, puzzle:0, dog:0};
+    items.forEach(function(r){ counts[r.quad]++; });
+    $("meMeta").textContent = items.length
+      ? "人氣門檻：銷量占比 ≥ " + (me.popThreshold*100).toFixed(1) + "%（" + items.length + " 項品項）・獲利力門檻：單份貢獻毛利 ≥ " + fmtMoney(me.avgUnitCM) + "（加權平均）"
+      : "尚未加入任何品項。";
+
+    var legend = $("meLegend");
+    legend.innerHTML = "";
+    QUAD_ORDER.forEach(function(k){
+      var d = QUAD_DEFS[k];
+      var div = document.createElement("div");
+      div.className = "q-card";
+      div.style.borderLeftColor = d.hex;
+      div.innerHTML = '<span class="q-count">' + counts[k] + ' 項</span><div class="q-name" style="color:' + d.hex + ';">' + d.label + '</div><div class="q-axis">' + d.axis + '</div><div class="q-desc">' + d.desc + '</div>';
+      legend.appendChild(div);
+    });
+
+    var svg = buildMeSvg(calc);
     $("meChart").innerHTML = items.length ? svg : '<div class="empty-note">尚未加入任何品項。</div>';
 
     var tbody = $("meTbody");
@@ -1412,7 +1454,12 @@ var WATERMARK_DATA_URI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAeAAAAE7
     var anchor = (stars[0] || plows[0]);
     if(anchor && puzzles.length){
       var partner = puzzles.filter(function(r){ return r.categoryId !== anchor.categoryId; })[0] || puzzles[0];
-      s.push("套餐建議：把謎題商品「" + partner.name + "」設計成「" + anchor.name + "」的加購價選項（例如加 " + fmtInt(Math.round(partner.price * 0.8 / 5) * 5) + " 元），用高人氣主餐帶動高毛利品項的曝光。");
+      if(partner.categoryId === anchor.categoryId && partner.price > anchor.price){
+        // 同分類（例如兩道主餐）不適合「加購」，改成「升級」：點人氣款時加差價換成高毛利款
+        s.push("升級建議：謎題商品「" + partner.name + "」與人氣款「" + anchor.name + "」同屬「" + partner.categoryName + "」，可在點「" + anchor.name + "」時提供「加 " + fmtInt(Math.round((partner.price - anchor.price) * 0.9 / 10) * 10) + " 元升級」選項（約九折差價），讓客人用小幅加價換到高毛利品項。");
+      } else {
+        s.push("套餐建議：把謎題商品「" + partner.name + "」設計成「" + anchor.name + "」的加購價選項（例如加 " + fmtInt(Math.round(partner.price * 0.8 / 5) * 5) + " 元），用高人氣品項帶動高毛利品項的曝光。");
+      }
     } else if(anchor && plows.length > 1){
       s.push("套餐建議：把「" + anchor.name + "」與「" + plows[plows.length-1].name + "」組成套餐，套餐價略低於單點加總，拉高客單價。");
     }
@@ -1458,41 +1505,120 @@ var WATERMARK_DATA_URI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAeAAAAE7
   }
 
   /* ---------- PDF report（獨立靜態報告） ---------- */
+  /* ---------- PDF report（獨立靜態報告，按下匯出時才組出來） ---------- */
   function buildPrintReport(){
-    var calc = calculate(), t = calc.totals, ns = netState(t);
-    var html = '<div class="pr-section"><h1>餐飲菜單組合收支平衡計算機・試算報告</h1><p class="pr-meta">產生時間：' + escapeHtml(new Date().toLocaleString("zh-TW")) + '　｜　金額單位：新台幣　｜　僅供試算參考，非正式財務報表</p></div>';
-    var ov = [
-      ["月營收（含稅）", fmtMoney(t.revenue)],
-      ["營業稅（" + state.taxPct + "%）", fmtMoney(t.tax)],
-      ["外送抽成＋金流手續費（外送占比 " + state.deliveryShare + "%、抽成 " + state.deliveryFeePct + "%、金流 " + state.paymentFeePct + "%）", fmtMoney(t.fee)],
-      ["食材成本（加權食材成本率 " + fmtPct(t.foodCostPct) + "）", fmtMoney(t.foodCost)],
-      ["月貢獻毛利", fmtMoney(t.cm)],
-      ["每月固定支出（店租 " + fmtMoney(state.rent) + "／人事 " + fmtMoney(state.labor) + "／水電 " + fmtMoney(state.utilities) + "／其他 " + fmtMoney(state.otherFixed) + "）", fmtMoney(t.fixed)],
-      ["月淨利（淨利率 " + fmtPct(t.netMargin) + "，" + NET_LABEL[ns] + "）", fmtMoney(t.net)],
-      ["損益兩平每日營收（每月營業 " + state.openDays + " 天）", t.beDaily == null ? "無法打平" : fmtMoney(t.beDaily)],
-      ["損益兩平每日需賣出", t.bePortionsDaily == null ? "—" : fmtInt(Math.ceil(t.bePortionsDaily)) + " 份（目前日均 " + fmtInt(t.portionsDaily) + " 份）"],
-      ["主要成本率（食材＋人事）／店租占比", fmtPct(t.primeShare) + "／" + fmtPct(t.rentShare)],
-      ["備料庫存資金", fmtMoney(t.stockValue) + (state.capEnabled && state.capAmount > 0 ? "（上限 " + fmtMoney(state.capAmount) + "）" : "")]
+    var calc = recalcAll(), t = calc.totals, ns = netState(t), now = new Date();
+    var preset = activePresetId ? PRESETS.filter(function(p){ return p.id === activePresetId; })[0] : null;
+    var storeLabel = preset ? "範例情境：" + preset.label : "自訂菜單組合";
+    function td(v, num){ return '<td' + (num ? ' class="n"' : '') + '>' + v + '</td>'; }
+    var html = '<div class="pr-head"><div><h1>餐飲菜單組合收支試算報告</h1><div class="pr-store">' + escapeHtml(storeLabel) + '・' + calc.perProduct.length + ' 項品項・' + state.categories.length + ' 個分類</div></div>' +
+      '<p class="pr-meta" style="text-align:right;">產生時間：' + escapeHtml(now.toLocaleString("zh-TW", {hour12:false})) + '<br>金額單位：新台幣（NT$）<br>計算驗算：' + (calc.verify && !calc.verify.ok ? "❌ 有 " + calc.verify.errors.length + " 項錯誤" : "✅ 通過") + '</p></div>';
+
+    // 整體結論
+    var verdict = ns === "good" ? "獲利健康" : ns === "warn" ? "微利／接近打平" : ns === "bad" ? "虧損" : "尚無營收資料";
+    var verdictSub = t.revenue > 0
+      ? "月淨利 " + fmtMoney(t.net) + "（淨利率 " + fmtPct(t.netMargin) + "）。" + (t.beDaily == null ? "目前貢獻毛利 ≤ 0，賣越多虧越多。" : "每日營收需達 " + fmtMoney(t.beDaily) + "（約 " + fmtInt(Math.ceil(t.bePortionsDaily)) + " 份）才打平，目前日均 " + fmtMoney(t.revenueDaily) + "（" + fmtInt(t.portionsDaily) + " 份），安全邊際 " + fmtPct(t.safetyMargin) + "。")
+      : "請先輸入菜單品項。";
+    html += '<div class="pr-verdict ' + (ns === "na" ? "" : ns) + '">整體評估：' + verdict + '<span>' + escapeHtml(verdictSub) + '</span></div>';
+
+    // KPI 摘要
+    var urgentN = calc.perProduct.filter(function(r){ return r.restockLevel === "urgent"; }).length;
+    var watchN = calc.perProduct.filter(function(r){ return r.restockLevel === "watch"; }).length;
+    var kpis = [
+      ["月營收（含稅）", fmtMoney(t.revenue), "日均 " + fmtMoney(t.revenueDaily), ""],
+      ["月貢獻毛利", fmtMoney(t.cm), "毛利率 " + fmtPct(t.cmRatio * 100), ""],
+      ["每月固定支出", fmtMoney(t.fixed), "換算每週 " + fmtMoney(t.weeklyFixed), ""],
+      ["月淨利", fmtMoney(t.net), "淨利率 " + fmtPct(t.netMargin), ns === "bad" ? "bad" : ns === "good" ? "good" : ""],
+      ["損益兩平每日營收", t.beDaily == null ? "無法打平" : fmtMoney(t.beDaily), "每月 " + (t.beRevenue == null ? "—" : fmtMoney(t.beRevenue)), (t.beDaily == null || t.revenueDaily < t.beDaily) ? "bad" : "good"],
+      ["加權食材成本率", fmtPct(t.foodCostPct), "健康帶 28–34%", t.foodCostPct > 34 ? "bad" : "good"],
+      ["主要成本率（食材＋人事）", fmtPct(t.primeShare), "建議 ≤60%", t.primeShare > 60 ? "bad" : "good"],
+      ["備料叫貨警示", urgentN + " 緊急／" + watchN + " 注意", "叫貨前置 " + state.restockLeadDays + " 天", urgentN ? "bad" : ""]
     ];
-    html += '<div class="pr-section"><h2>整體收支概況</h2><table class="pr-table">' + ov.map(function(r){
-      var cls = r[0].indexOf("月淨利") === 0 ? (ns === "bad" ? "pr-bad" : ns === "good" ? "pr-good" : "") : "";
-      return '<tr class="' + cls + '"><td>' + escapeHtml(r[0]) + '</td><td>' + escapeHtml(r[1]) + '</td></tr>';
-    }).join("") + '</table></div>';
-    html += '<div class="pr-section"><h2>菜單品項與菜單工程矩陣</h2><table class="pr-table"><tr><th>品名</th><th>分類</th><th>售價</th><th>食材成本</th><th>食材成本率</th><th>單份毛利</th><th>月銷量</th><th>月貢獻毛利</th><th>矩陣分類</th></tr>' +
-      calc.perProduct.slice().sort(function(a,b){ return b.monthlyCM - a.monthlyCM; }).map(function(r){
-        return '<tr' + (r.overTarget || r.unitCM < 0 ? ' class="pr-bad"' : '') + '><td>' + escapeHtml(r.name) + '</td><td>' + escapeHtml(r.categoryName) + '</td><td>' + fmtMoney(r.price) + '</td><td>' + fmtMoney(r.cost) + '</td><td>' + fmtPct(r.costPct) + '</td><td>' + fmtMoney(r.unitCM) + '</td><td>' + fmtInt(r.monthlySales) + '</td><td>' + fmtMoney(r.monthlyCM) + '</td><td>' + QUAD_DEFS[r.quad].label + '</td></tr>';
-      }).join("") + '</table></div>';
-    html += '<div class="pr-section"><h2>分類別彙總</h2><table class="pr-table"><tr><th>分類</th><th>品項數</th><th>月銷量</th><th>月營收</th><th>食材成本率／目標</th><th>月貢獻毛利</th></tr>' +
-      calc.catRollup.map(function(c){ return '<tr><td>' + escapeHtml(c.name) + '</td><td>' + c.count + '</td><td>' + fmtInt(c.sales) + '</td><td>' + fmtMoney(c.revenue) + '</td><td>' + fmtPct(c.costPct) + '／' + c.targetCostPct + '%</td><td>' + fmtMoney(c.cm) + '</td></tr>'; }).join("") + '</table></div>';
-    var restockRows = calc.perProduct.filter(function(r){ return r.restockLevel !== "normal"; }).map(function(r){
-      return '<tr class="' + (r.restockLevel === "urgent" ? "pr-bad" : "") + '"><td>' + escapeHtml(r.name) + '</td><td>' + fmtInt(r.stock) + '</td><td>' + r.daysLeft.toFixed(1) + ' 天</td><td>' + (r.restockLevel==="urgent"?"緊急叫貨":"注意") + '</td></tr>';
+    html += '<div class="pr-kpis">' + kpis.map(function(k){ return '<div class="pr-kpi ' + k[3] + '"><div class="l">' + k[0] + '</div><div class="v">' + k[1] + '</div><div class="s">' + k[2] + '</div></div>'; }).join("") + '</div>';
+
+    // 營收去向＋費率設定
+    var flow = [
+      ["營業稅（" + state.taxPct + "%）", t.tax, "#8A7B70"],
+      ["外送抽成＋金流", t.fee, "#6B4FA0"],
+      ["食材成本", t.foodCost, "#D99A1E"],
+      ["人事", state.labor, "#1C6E8C"],
+      ["店租", state.rent, "#B4532A"],
+      ["水電瓦斯", state.utilities, "#6A5A50"],
+      ["其他固定支出", state.otherFixed, "#8A6D3D"],
+      [t.net >= 0 ? "淨利" : "虧損", t.net, t.net >= 0 ? "#2F7D55" : "#C23B32"]
+    ];
+    var flowRows = flow.map(function(f){
+      var pct = t.revenue > 0 ? f[1] / t.revenue * 100 : 0;
+      return '<tr' + (f[1] < 0 ? ' class="pr-bad"' : '') + '>' + td(f[0]) + td(fmtMoney(f[1]), 1) + td(fmtPct(pct), 1) + '<td><div class="pr-bar"><i style="width:' + Math.min(Math.abs(pct), 100).toFixed(1) + '%;background:' + f[2] + ';"></i></div></td></tr>';
     }).join("");
-    html += '<div class="pr-section"><h2>備料叫貨警示（叫貨前置 ' + state.restockLeadDays + ' 天）</h2><table class="pr-table"><tr><th>品名</th><th>備料庫存（份）</th><th>可撐天數</th><th>建議</th></tr>' + (restockRows || '<tr><td colspan="4">目前沒有需要優先叫貨的備料</td></tr>') + '</table></div>';
-    if($("aiResult").classList.contains("show")){
-      html += '<div class="pr-section"><h2>診斷與套餐搭配建議（' + escapeHtml($("aiBadge").textContent) + '）</h2><p style="white-space:pre-wrap;">' + escapeHtml($("aiResultText").textContent) + '</p></div>';
+    var settings = [
+      ["每月營業天數", state.openDays + " 天"],
+      ["營業稅率（售價含稅）", state.taxPct + "%"],
+      ["外送營收占比", state.deliveryShare + "%"],
+      ["外送平台抽成", state.deliveryFeePct + "%"],
+      ["金流／刷卡手續費", state.paymentFeePct + "%"],
+      ["加權通路費率", fmtPct(channelFeeRate() * 100)],
+      ["叫貨前置天數", state.restockLeadDays + " 天"],
+      ["備料庫存資金", fmtMoney(t.stockValue) + (state.capEnabled && state.capAmount > 0 ? "（上限 " + fmtMoney(state.capAmount) + (t.stockValue > state.capAmount ? "，已超過" : "") + "）" : "")]
+    ];
+    html += '<div class="pr-cols"><div class="pr-section"><h2>每 100 元營收的去向（月）</h2><table class="pr-table"><thead><tr><th>項目</th><th>金額</th><th>占營收</th><th></th></tr></thead><tbody>' + flowRows + '</tbody></table></div>' +
+      '<div class="pr-section"><h2>營運與費率設定</h2><table class="pr-table"><tbody>' + settings.map(function(s){ return '<tr>' + td(s[0]) + td(escapeHtml(s[1]), 1) + '</tr>'; }).join("") + '</tbody></table></div></div>';
+
+    // 菜單工程矩陣（圖＋四象限清單）
+    var counts = {star:0, plow:0, puzzle:0, dog:0};
+    calc.perProduct.forEach(function(r){ counts[r.quad]++; });
+    if(calc.perProduct.length){
+      html += '<div class="pr-section"><h2>菜單工程矩陣</h2><p class="pr-meta" style="margin-bottom:6px;">人氣門檻：銷量占比 ≥ ' + (calc.me.popThreshold * 100).toFixed(1) + '%　｜　獲利力門檻：單份貢獻毛利 ≥ ' + fmtMoney(calc.me.avgUnitCM) + '（加權平均）</p><div class="pr-matrix"><div>' + buildMeSvg(calc) + '</div><div>' +
+        QUAD_ORDER.map(function(k){
+          var d = QUAD_DEFS[k];
+          var names = calc.perProduct.filter(function(r){ return r.quad === k; }).map(function(r){ return escapeHtml(r.name); }).join("、") || "—";
+          return '<div class="pr-q" style="border-color:' + d.hex + ';"><strong style="color:' + d.hex + ';">' + d.label + '（' + counts[k] + '）</strong>　' + d.axis + '<br>' + names + '<br><span style="color:#6A5A50;">建議：' + d.action + '</span></div>';
+        }).join("") + '</div></div></div>';
     }
+
+    // 品項明細
+    html += '<div class="pr-section' + (calc.perProduct.length > 14 ? ' pr-long' : '') + '"><h2>菜單品項明細（依月貢獻毛利排序）</h2><table class="pr-table"><thead><tr><th>品名</th><th>分類</th><th>售價</th><th>食材成本</th><th>食材成本率</th><th>單份毛利</th><th>月銷量</th><th>銷量占比</th><th>月貢獻毛利</th><th>矩陣</th></tr></thead><tbody>' +
+      calc.perProduct.slice().sort(function(a,b){ return b.monthlyCM - a.monthlyCM; }).map(function(r){
+        var d = QUAD_DEFS[r.quad];
+        return '<tr' + (r.unitCM < 0 ? ' class="pr-bad"' : '') + '>' + td(escapeHtml(r.name)) + td(escapeHtml(r.categoryName)) + td(fmtMoney(r.price), 1) + td(fmtMoney(r.cost), 1) +
+          '<td class="n"' + (r.overTarget ? ' style="color:#C23B32;font-weight:700;"' : '') + '>' + fmtPct(r.costPct) + '</td>' + td(fmtMoney(r.unitCM), 1) + td(fmtInt(r.monthlySales), 1) + td(((r.mixPct || 0) * 100).toFixed(1) + "%", 1) + td(fmtMoney(r.monthlyCM), 1) +
+          '<td><span class="pr-qtag" style="background:' + d.hex + ';">' + d.label.replace("商品", "") + '</span></td></tr>';
+      }).join("") +
+      '<tr><td colspan="6"><strong>合計</strong></td>' + td("<strong>" + fmtInt(t.portions) + "</strong>", 1) + td("100%", 1) + td("<strong>" + fmtMoney(t.cm) + "</strong>", 1) + '<td></td></tr></tbody></table><p class="pr-meta" style="margin-top:4px;">售價為含稅價；食材成本率＝食材成本 ÷ 未稅售價，紅字表示超過所屬分類的目標；單份毛利＝未稅售價 ×（1－通路費率）－食材成本。</p></div>';
+
+    // 分類彙總＋叫貨警示
+    var catRows = calc.catRollup.slice().sort(function(a,b){ return b.cm - a.cm; }).map(function(c){
+      var over = c.costPct != null && c.costPct > c.targetCostPct;
+      return '<tr>' + td(escapeHtml(c.name)) + td(c.count, 1) + td(fmtInt(c.sales), 1) + td(fmtMoney(c.revenue), 1) + '<td class="n"' + (over ? ' style="color:#C23B32;font-weight:700;"' : '') + '>' + fmtPct(c.costPct) + '／' + c.targetCostPct + '%</td>' + td(fmtMoney(c.cm), 1) + '</tr>';
+    }).join("");
+    var restockRows = calc.perProduct.filter(function(r){ return r.restockLevel !== "normal"; }).sort(function(a,b){ return a.daysLeft - b.daysLeft; }).map(function(r){
+      return '<tr class="' + (r.restockLevel === "urgent" ? "pr-bad" : "") + '">' + td(escapeHtml(r.name)) + td(fmtInt(r.stock), 1) + td(r.dailySales.toFixed(1), 1) + td(r.daysLeft.toFixed(1) + " 天", 1) + td(r.restockLevel === "urgent" ? "緊急叫貨" : "注意") + '</tr>';
+    }).join("");
+    html += '<div class="pr-cols"><div class="pr-section"><h2>分類別彙總</h2><table class="pr-table"><thead><tr><th>分類</th><th>品項</th><th>月銷量</th><th>月營收</th><th>食材率／目標</th><th>月貢獻毛利</th></tr></thead><tbody>' + catRows + '</tbody></table></div>' +
+      '<div class="pr-section"><h2>備料叫貨警示</h2><table class="pr-table"><thead><tr><th>品名</th><th>備料（份）</th><th>日均銷量</th><th>可撐</th><th>建議</th></tr></thead><tbody>' + (restockRows || '<tr><td colspan="5">目前沒有需要優先叫貨的備料</td></tr>') + '</tbody></table></div></div>';
+
+    // 診斷：有產生過 AI／規則式結果就用畫面上的，否則自動附上規則式健檢
+    var diagTitle, diagText;
+    if($("aiResult").classList.contains("show")){ diagTitle = $("aiBadge").textContent; diagText = $("aiResultText").textContent; }
+    else { diagTitle = "規則式健檢"; diagText = ruleBasedDiagnosis(calc); }
+    html += '<div class="pr-section pr-long"><h2>診斷與套餐搭配建議（' + escapeHtml(diagTitle) + '）</h2><div class="pr-diag">' + escapeHtml(diagText) + '</div></div>';
+
     html += '<div class="pr-footer">本報告由「餐飲菜單組合收支平衡計算機」產生，所有數字皆為依目前輸入推算的估計值，非正式財務報表；營業稅、外送抽成與金流手續費為概估比率，菜單工程矩陣為簡化分類，不能取代會計師或餐飲顧問的專業判斷。</div>';
     $("printReportRoot").innerHTML = html;
+    return calc;
+  }
+
+  function exportPdf(){
+    if(!state.products.length){ showToast("請先加入菜單品項再匯出報告。"); return; }
+    buildPrintReport();
+    // 暫時改 document.title，讓「另存為 PDF」的預設檔名有意義
+    var d = new Date(), pad = function(n){ return (n < 10 ? "0" : "") + n; };
+    var oldTitle = document.title;
+    document.title = "菜單組合收支試算報告_" + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate());
+    var restore = function(){ document.title = oldTitle; window.removeEventListener("afterprint", restore); };
+    window.addEventListener("afterprint", restore);
+    showToast("列印視窗的「目的地」請選「另存為 PDF」");
+    setTimeout(function(){ window.print(); setTimeout(restore, 1000); }, 50);
   }
 
   /* ---------- CSV / Excel import & export ---------- */
@@ -1639,7 +1765,7 @@ var WATERMARK_DATA_URI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAeAAAAE7
   }
 
   /* ---------- 測試用 hook（不影響使用者操作） ---------- */
-  window.__menuMix = {calculate: calculate, applyPreset: function(i){ applyPreset(PRESETS[i], true); return recalcAll(); }, presets: PRESETS, getState: function(){ return state; }, ruleBasedDiagnosis: function(){ return ruleBasedDiagnosis(calculate()); }};
+  window.__menuMix = {calculate: calculate, applyPreset: function(i){ applyPreset(PRESETS[i], true); return recalcAll(); }, presets: PRESETS, getState: function(){ return state; }, ruleBasedDiagnosis: function(){ return ruleBasedDiagnosis(calculate()); }, buildPrintReport: buildPrintReport};
 
   /* ---------- Init ---------- */
   if($("wmImg")) $("wmImg").src = WATERMARK_DATA_URI;
@@ -1664,7 +1790,7 @@ var WATERMARK_DATA_URI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAeAAAAE7
   $("aiDiagnoseBtn").addEventListener("click", runAiDiagnosis);
   $("ruleDiagnoseBtn").addEventListener("click", runRuleDiagnosis);
   $("resetBtn").addEventListener("click", resetToPresetOne);
-  $("pdfExportBtn").addEventListener("click", function(){ buildPrintReport(); window.print(); });
+  ["pdfExportBtn","pdfExportBtnTop","pdfExportBtnResults"].forEach(function(id){ $(id).addEventListener("click", exportPdf); });
   $("productUploadBtn").addEventListener("click", function(){ $("productFileInput").click(); });
   $("productDownloadBtn").addEventListener("click", downloadProductsCsv);
   $("productFileInput").addEventListener("change", function(){

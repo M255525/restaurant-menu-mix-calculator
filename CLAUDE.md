@@ -38,6 +38,12 @@
 
 調整範例後務必重跑：在 console 執行 `__menuMix.applyPreset(i)`（測試 hook，回傳 calc），確認 `#verifyTitle` 為 ✅ 且狀態仍成立。
 
+## PDF 報告（2026-10-05 強化）
+
+三個入口（hero `#pdfExportBtnTop`、結果儀表板 `#pdfExportBtnResults`、頁尾 `#pdfExportBtn`）都呼叫 `exportPdf()`：`buildPrintReport()` 組靜態報告 → 暫改 `document.title` 當預設檔名 → `window.print()`，`afterprint` 還原。報告含結論框、8 KPI、營收去向、費率設定、矩陣 SVG（與網頁共用 `buildMeSvg(calc)`）、品項明細、分類、叫貨、診斷（沒產生過就自動附規則式健檢）。`@page A4`、`print-color-adjust:exact`、`h2{break-after:avoid}`，品項 ≤14 項時明細區塊不拆頁。驗證用 Playwright `page.emulateMedia({media:'print'})`＋`page.pdf()`，**不要真的點按鈕**（列印對話框會卡住 CDP）。
+
+規則式套餐建議：謎題品項跟人氣錨點同分類且較貴時，改給「加差價九折升級」而非「加購」（避免出現「火鍋加購另一個火鍋 705 元」）。
+
 ## 踩坑
 
 - `.bar-fill`／`.flow-fill` 是放在 flex 子項裡的 `<span>`，**必須 `display:block`** 否則 width 無效、橫條全空白。（Amazon 版 `.bar-fill` 也沒加，分類橫條可能同樣看不到，尚未修。）
