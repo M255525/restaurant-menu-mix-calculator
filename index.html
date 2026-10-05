@@ -381,7 +381,7 @@ footer .disclaimer a{color:#F2C79A;}
           <th style="min-width:96px;">售價 NT$（含稅）</th>
           <th style="min-width:96px;">食材成本 NT$／份</th>
           <th style="min-width:84px;">食材成本率</th>
-          <th style="min-width:90px;" title="未稅售價－含稅售價×通路費率－食材成本（已扣營業稅、外送抽成／金流手續費）">單份毛利 ⓘ</th>
+          <th style="min-width:90px;" title="單份毛利＝含稅售價－營業稅－通路費－食材成本&#10;營業稅＝含稅售價－含稅售價÷(1＋稅率)&#10;通路費＝含稅售價×通路費率（外送抽成／金流手續費按顧客實付金額計）&#10;例：售價120、稅5%、通路費率7.2%、食材40 → 120－5.71－8.64－40＝65.65">單份毛利 ⓘ</th>
           <th style="min-width:84px;">備料庫存（份）</th>
           <th style="min-width:80px;">週銷量</th>
           <th style="min-width:80px;">月銷量</th>
@@ -1584,7 +1584,7 @@ var WATERMARK_DATA_URI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAeAAAAE7
           '<td class="n"' + (r.overTarget ? ' style="color:#C23B32;font-weight:700;"' : '') + '>' + fmtPct(r.costPct) + '</td>' + td(fmtMoney(r.unitCM), 1) + td(fmtInt(r.monthlySales), 1) + td(((r.mixPct || 0) * 100).toFixed(1) + "%", 1) + td(fmtMoney(r.monthlyCM), 1) +
           '<td><span class="pr-qtag" style="background:' + d.hex + ';">' + d.label.replace("商品", "") + '</span></td></tr>';
       }).join("") +
-      '<tr><td colspan="6"><strong>合計</strong></td>' + td("<strong>" + fmtInt(t.portions) + "</strong>", 1) + td("100%", 1) + td("<strong>" + fmtMoney(t.cm) + "</strong>", 1) + '<td></td></tr></tbody></table><p class="pr-meta" style="margin-top:4px;">售價為含稅價；食材成本率＝食材成本 ÷ 未稅售價，紅字表示超過所屬分類的目標；單份毛利＝未稅售價－含稅售價 × 通路費率－食材成本。</p></div>';
+      '<tr><td colspan="6"><strong>合計</strong></td>' + td("<strong>" + fmtInt(t.portions) + "</strong>", 1) + td("100%", 1) + td("<strong>" + fmtMoney(t.cm) + "</strong>", 1) + '<td></td></tr></tbody></table><p class="pr-meta" style="margin-top:4px;">售價為含稅價；食材成本率＝食材成本 ÷ 未稅售價，紅字表示超過所屬分類的目標；單份毛利＝含稅售價－營業稅－通路費（含稅售價 × 通路費率）－食材成本。</p></div>';
 
     // 分類彙總＋叫貨警示
     var catRows = calc.catRollup.slice().sort(function(a,b){ return b.cm - a.cm; }).map(function(c){
