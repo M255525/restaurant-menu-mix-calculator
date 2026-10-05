@@ -317,7 +317,7 @@ footer .disclaimer a{color:#F2C79A;}
 <section class="alt">
   <div class="wrap">
     <h2 class="section-title">全域設定</h2>
-    <p class="section-lead">所有金額皆為新台幣。菜單售價一般是<strong>含稅價</strong>，系統會先依營業稅率換算成未稅營收，再依外送占比扣掉外送平台抽成、其餘內用營收扣掉金流手續費，最後扣食材成本，得到每道菜的「單份貢獻毛利」。全店貢獻毛利扣掉每月固定支出，才是月淨利。</p>
+    <p class="section-lead">所有金額皆為新台幣。菜單售價一般是<strong>含稅價</strong>，系統會先依營業稅率扣掉營業稅，再依外送占比扣掉外送平台抽成、其餘內用營收扣掉金流手續費（兩者都以顧客實付的含稅價計費），最後扣食材成本，得到每道菜的「單份貢獻毛利」。全店貢獻毛利扣掉每月固定支出，才是月淨利。</p>
 
     <h3 class="sub-title">每月固定支出</h3>
     <div class="global-grid">
@@ -372,7 +372,7 @@ footer .disclaimer a{color:#F2C79A;}
         <input type="file" id="productFileInput" accept=".csv,.xlsx,.xls" style="display:none;">
       </span>
     </div>
-    <p class="section-lead">「售價」填菜單上的含稅價；「食材成本」填一份的食材＋包材成本。食材成本率、單份毛利、月貢獻毛利會自動算出。「備料庫存」是目前備好或庫存的食材還能出幾份，用來估算還能撐幾天。填入「週銷量」會自動帶出「月銷量」（週銷量 × 30 ÷ 7，四捨五入），實際月銷量不同時可再手動修改。上傳 CSV／Excel 會依欄位標題自動對應並<strong>取代</strong>目前的菜單品項（分類名稱會自動比對或新增）。</p>
+    <p class="section-lead">「售價」填菜單上的含稅價；「食材成本」填一份的食材＋包材成本。食材成本率、單份毛利、月貢獻毛利會自動算出；<strong>單份毛利已扣營業稅與外送抽成／金流手續費</strong>，所以會比「售價－食材成本」小。「備料庫存」是目前備好或庫存的食材還能出幾份，用來估算還能撐幾天。填入「週銷量」會自動帶出「月銷量」（週銷量 × 30 ÷ 7，四捨五入），實際月銷量不同時可再手動修改。上傳 CSV／Excel 會依欄位標題自動對應並<strong>取代</strong>目前的菜單品項（分類名稱會自動比對或新增）。</p>
     <div class="table-scroll">
       <table class="prod-table" id="productTable">
         <thead><tr>
@@ -381,7 +381,7 @@ footer .disclaimer a{color:#F2C79A;}
           <th style="min-width:96px;">售價 NT$（含稅）</th>
           <th style="min-width:96px;">食材成本 NT$／份</th>
           <th style="min-width:84px;">食材成本率</th>
-          <th style="min-width:90px;">單份毛利</th>
+          <th style="min-width:90px;" title="未稅售價－含稅售價×通路費率－食材成本（已扣營業稅、外送抽成／金流手續費）">單份毛利 ⓘ</th>
           <th style="min-width:84px;">備料庫存（份）</th>
           <th style="min-width:80px;">週銷量</th>
           <th style="min-width:80px;">月銷量</th>
@@ -875,7 +875,7 @@ var WATERMARK_DATA_URI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAeAAAAE7
     var perProduct = state.products.map(function(p){
       var cat = catMap[p.categoryId];
       var netPrice = p.price * npf;                         // 未稅單價
-      var unitFee = netPrice * ch;                          // 單份通路費（外送抽成＋金流）
+      var unitFee = p.price * ch;                           // 單份通路費（外送抽成＋金流）：平台/金流對顧客實付的含稅價收費
       var unitCM = netPrice - unitFee - p.cost;             // 單份貢獻毛利
       var costPct = netPrice > 0 ? p.cost / netPrice * 100 : null;
       var target = cat ? cat.targetCostPct : null;
@@ -1188,7 +1188,7 @@ var WATERMARK_DATA_URI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAeAAAAE7
     var t = {revenue:0, cm:0, fixed:state.rent + state.labor + state.utilities + state.otherFixed, stockValue:0, urgent:0, watch:0, rows:[]};
     for(var i = 0; i < state.products.length; i++){
       var p = state.products[i];
-      var unit = p.price / tax * keep - p.cost;
+      var unit = p.price / tax - p.price * (1 - keep) - p.cost;
       t.revenue += p.price * p.monthlySales;
       t.cm += unit * p.monthlySales;
       t.stockValue += p.cost * p.stock;
@@ -1584,7 +1584,7 @@ var WATERMARK_DATA_URI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAeAAAAE7
           '<td class="n"' + (r.overTarget ? ' style="color:#C23B32;font-weight:700;"' : '') + '>' + fmtPct(r.costPct) + '</td>' + td(fmtMoney(r.unitCM), 1) + td(fmtInt(r.monthlySales), 1) + td(((r.mixPct || 0) * 100).toFixed(1) + "%", 1) + td(fmtMoney(r.monthlyCM), 1) +
           '<td><span class="pr-qtag" style="background:' + d.hex + ';">' + d.label.replace("商品", "") + '</span></td></tr>';
       }).join("") +
-      '<tr><td colspan="6"><strong>合計</strong></td>' + td("<strong>" + fmtInt(t.portions) + "</strong>", 1) + td("100%", 1) + td("<strong>" + fmtMoney(t.cm) + "</strong>", 1) + '<td></td></tr></tbody></table><p class="pr-meta" style="margin-top:4px;">售價為含稅價；食材成本率＝食材成本 ÷ 未稅售價，紅字表示超過所屬分類的目標；單份毛利＝未稅售價 ×（1－通路費率）－食材成本。</p></div>';
+      '<tr><td colspan="6"><strong>合計</strong></td>' + td("<strong>" + fmtInt(t.portions) + "</strong>", 1) + td("100%", 1) + td("<strong>" + fmtMoney(t.cm) + "</strong>", 1) + '<td></td></tr></tbody></table><p class="pr-meta" style="margin-top:4px;">售價為含稅價；食材成本率＝食材成本 ÷ 未稅售價，紅字表示超過所屬分類的目標；單份毛利＝未稅售價－含稅售價 × 通路費率－食材成本。</p></div>';
 
     // 分類彙總＋叫貨警示
     var catRows = calc.catRollup.slice().sort(function(a,b){ return b.cm - a.cm; }).map(function(c){
