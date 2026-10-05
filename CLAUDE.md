@@ -53,4 +53,4 @@
 
 ## 部署
 
-尚未推 GitHub／未上 Pages（依「實驗性新工具部署前先確認」慣例，待使用者決定）。
+2026-10-05 依使用者指示推公開 repo <https://github.com/M255525/restaurant-menu-mix-calculator>，GitHub Pages（Actions workflow 模式，`.github/workflows/deploy-pages.yml`）：<https://m255525.github.io/restaurant-menu-mix-calculator/>。
