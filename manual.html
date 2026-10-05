@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>操作手冊 · 餐飲菜單組合收支平衡計算機</title>
+<style>
+  :root{
+    --bg:#F5F2E8; --bg-alt:#EDE9DA; --panel:#ffffff; --panel-raised:#FBF8EF;
+    --line:#D9D3C0; --line-soft:#E7E2D2; --text:#1B2420; --text-dim:#4C5852; --text-faint:#8A8570;
+    --ink:#2A1C17; --brand:#B4532A; --red:#C23B32;
+    --font-sans:"Noto Sans TC","PingFang TC","Microsoft JhengHei",-apple-system,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#161B1A; --bg-alt:#1D2422; --panel:#202B29; --panel-raised:#263230;
+      --line:#3A4744; --line-soft:#2E3A38; --text:#EDF1EF; --text-dim:#B7C6C1; --text-faint:#8895A6;
+      --ink:#F2C79A; --brand:#F2A46B; --red:#E08268;
+    }
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-sans);line-height:1.75;}
+  a{color:var(--brand);}
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;padding:16px 24px;flex-wrap:wrap;gap:10px;
+    border-bottom:1px solid var(--line-soft);background:var(--bg-alt);
+  }
+  .brand{display:flex;align-items:center;gap:8px;font-weight:700;}
+  .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--brand);}
+  .topbar a.back{
+    font-size:13px;color:var(--text-dim);text-decoration:none;
+    border:1px solid var(--line);padding:7px 14px;border-radius:6px;
+  }
+  .topbar a.back:hover{color:var(--brand);border-color:var(--brand);}
+  main{max-width:720px;margin:0 auto;padding:44px 24px 80px;}
+  h1{font-size:28px;margin:0 0 8px;}
+  .sub{color:var(--text-dim);margin:0 0 36px;}
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);border-radius:10px;padding:22px 24px;margin-bottom:20px;
+  }
+  .card h2{font-size:18px;margin:0 0 14px;color:var(--ink);}
+  .card h3{font-size:15px;margin:18px 0 6px;color:var(--ink);}
+  .card p, .card li{color:var(--text-dim);font-size:14.5px;}
+  .card ul, .card ol{padding-left:20px;margin:8px 0;}
+  .tip{
+    background:rgba(180,83,42,0.1);border:1px solid rgba(180,83,42,0.3);
+    border-radius:8px;padding:12px 16px;font-size:13.5px;color:var(--text-dim);margin-top:12px;
+  }
+  .warn{
+    background:rgba(194,59,50,0.1);border:1px solid rgba(194,59,50,0.3);
+    border-radius:8px;padding:14px 16px;font-size:13.5px;color:var(--text-dim);
+  }
+  .warn strong{color:var(--red);}
+  footer{border-top:1px solid var(--line-soft);background:var(--bg-alt);padding:24px;text-align:center;font-size:12.5px;color:var(--text-faint);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span class="dot"></span><span>餐飲菜單組合收支平衡計算機</span></div>
+  <a class="back" href="index.html">← 回到試算工具</a>
+</div>
+
+<main>
+  <h1>操作手冊</h1>
+  <p class="sub">輸入每道菜的台幣售價、食材成本與銷量，扣掉營業稅、外送平台抽成、金流手續費與食材後算出貢獻毛利，再扣每月固定支出得到月淨利；同時算出每天要賣多少才打平、哪些備料該叫貨，並用菜單工程矩陣替每道菜分類。</p>
+
+  <div class="card">
+    <h2>操作步驟</h2>
+    <ol>
+      <li>先點一個貼近你業態的<strong>快速範例</strong>（早午餐／拉麵／手搖飲／火鍋／便當），會套用整組固定支出、費率、分類與品項；之後可以再自行新增／刪除／編輯任何一列</li>
+      <li>在「全域設定」填入<strong>每月固定支出</strong>（店租、人事含勞健保、水電瓦斯、其他）、<strong>每月營業天數</strong>、<strong>營業稅率</strong>、<strong>外送營收占比與平台抽成</strong>、<strong>金流／刷卡手續費</strong>、<strong>叫貨前置天數</strong>；「備料庫存資金上限」是你自訂的警戒線，不需要就不用勾選</li>
+      <li>在「菜單分類與目標食材成本率」新增分類（例如主餐、飲品、小菜），各自設定希望控制的食材成本率</li>
+      <li>在「菜單品項」逐項填入品名、分類、<strong>含稅售價</strong>、<strong>一份的食材成本</strong>（含包材）、備料庫存（還能出幾份）、週／月銷量（<strong>填入週銷量會自動帶出月銷量</strong>＝週銷量×30÷7 四捨五入，可再手動修改）；食材成本率、單份毛利、月貢獻毛利會自動算出</li>
+      <li>也可以按「📤 上傳CSV／Excel」匯入整份菜單（見下方說明）</li>
+      <li>「結果儀表板」即時顯示月營收、貢獻毛利、固定支出、月／週淨利、損益兩平每日營收與份數、加權食材成本率、主要成本率、叫貨警示與備料資金；最上方的<strong>「計算驗算」</strong>會在每次修改後，用另一套獨立算法重算並比對畫面上的數字，顯示「✅ 驗算無誤」或「❌ 發現錯誤」，並列出資料提醒（例如食材成本為 0、每賣一份就虧錢、食材成本率超標、週月銷量差距過大）</li>
+      <li>「菜單工程矩陣」把每道菜分成明星／耕馬／謎題／瘦狗四類，附建議動作</li>
+    </ol>
+    <div class="tip">備料可撐天數＝備料庫存（份）÷（週銷量 ÷ 7）。低於叫貨前置天數＝緊急叫貨；低於前置天數的 1.5 倍＝注意；週銷量為 0 的品項不計算可撐天數。</div>
+  </div>
+
+  <div class="card">
+    <h2>收支是怎麼算的？</h2>
+    <ol>
+      <li><strong>未稅單價</strong>＝售價 ÷（1＋營業稅率）。菜單價一般已含 5% 營業稅；小規模營業人可改 1%，售價本來就未含稅則填 0</li>
+      <li><strong>通路費率</strong>＝外送占比 × 外送平台抽成 ＋（1－外送占比）× 金流手續費。例：外送 20%、抽成 32%、金流 1% → 0.2×32%＋0.8×1%＝7.2%</li>
+      <li><strong>單份貢獻毛利</strong>＝未稅單價 ×（1－通路費率）－食材成本</li>
+      <li><strong>月貢獻毛利</strong>＝Σ 單份貢獻毛利 × 月銷量；<strong>月淨利</strong>＝月貢獻毛利－每月固定支出</li>
+      <li><strong>週淨利</strong>＝Σ 單份貢獻毛利 × 週銷量－每月固定支出 × 7 ÷ 30</li>
+      <li><strong>損益兩平月營收</strong>＝固定支出 ÷（月貢獻毛利 ÷ 月營收），再除以營業天數得到每日營收；<strong>每日需賣出份數</strong>＝固定支出 ÷ 平均單份貢獻毛利 ÷ 營業天數（假設菜單銷售比例不變）</li>
+      <li><strong>食材成本率</strong>＝食材成本 ÷ 未稅單價（業界慣例以未稅營收為分母）</li>
+    </ol>
+    <div class="tip">淨利率 ≥10% 標示「獲利健康」、0–10% 標示「微利／打平臨界」、負值標示「虧損」。參考健康帶：食材成本 28–34%、人事 ≤32%、店租 ≤15%、主要成本（食材＋人事）≤60%（占含稅營收）。這些是一般經驗值，不同業態差異很大，僅供對照。</div>
+  </div>
+
+  <div class="card">
+    <h2>菜單工程矩陣是怎麼分的？</h2>
+    <p>採用餐飲業常用的 Kasavana &amp; Smith 菜單工程分析：</p>
+    <ul>
+      <li><strong>人氣</strong>：品項銷量占比 ≥（1 ÷ 品項數）× 70% 為高人氣</li>
+      <li><strong>獲利力</strong>：單份貢獻毛利 ≥ 全菜單加權平均單份貢獻毛利為高毛利</li>
+    </ul>
+    <ul>
+      <li><strong>明星商品（高人氣・高毛利）</strong>：招牌，維持品質、放菜單黃金位置、不輕易降價</li>
+      <li><strong>耕馬商品（高人氣・低毛利）</strong>：小幅調價、調份量或配方降食材成本、搭高毛利副餐做套餐</li>
+      <li><strong>謎題商品（低人氣・高毛利）</strong>：加強曝光、店員推薦、做成加購價選項</li>
+      <li><strong>瘦狗商品（低人氣・低毛利）</strong>：考慮下架、重新設計或減少備料</li>
+    </ul>
+    <div class="tip">矩陣只看數字。兒童餐、素食選項、搭配主餐的必要配角等策略性品項，即使落在瘦狗也可能值得保留，請自行判斷。</div>
+  </div>
+
+  <div class="card">
+    <h2>匯入／匯出菜單（CSV／Excel）</h2>
+    <ul>
+      <li>「📤 上傳CSV／Excel」支援 .csv、.xlsx、.xls，第一列須為欄位標題；可辨識的標題包含：品名／品項／菜名、分類、售價／單價、食材成本／成本、備料庫存／庫存、週銷量、月銷量（至少要有「售價」）</li>
+      <li>分類名稱會比對現有分類，找不到就自動新增（目標食材成本率預設 35%，可再修改）</li>
+      <li>只給週銷量會自動推算月銷量；只給月銷量會反推週銷量</li>
+      <li>匯入會<strong>取代</strong>目前的菜單品項，請先用「📥 下載菜單CSV」備份；下載檔另含食材成本率、單份毛利、月貢獻毛利、矩陣分類等自動計算欄（匯入時會被忽略）</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>請 AI 診斷收支與菜單組合</h2>
+    <ul>
+      <li>展開「AI 診斷設定」，選擇服務商（Claude／OpenAI／Gemini／OpenRouter）、填模型 ID 與自己的 API 金鑰</li>
+      <li>可點選診斷角度：整體收支健檢、調價與份量建議、套餐與加購設計、外送策略、菜單精簡；也可以自己輸入要求</li>
+      <li>每次請求都會附上菜單工程矩陣分類，並要求 AI 給出具體的套餐與加購搭配建議</li>
+      <li>沒有金鑰也能按「改用規則式健檢」，會依成本結構、叫貨警示與矩陣分類自動產生建議（含調價試算與加購搭配）</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>匯出 PDF</h2>
+    <p>頁尾按「🖨️ 匯出PDF」會產生一份獨立的試算報告（整體收支概況、菜單品項與矩陣分類、分類彙總、叫貨警示，以及曾經產生過的診斷內容），在列印視窗選「另存為 PDF」即可。報告每頁都會加上馬克老師浮水印。</p>
+  </div>
+
+  <div class="card">
+    <h2>加入主畫面（可選）</h2>
+    <p>頁面右上角按「📲 加入主畫面」，可以把這個工具像 App 一樣安裝到手機或電腦桌面。</p>
+    <ul>
+      <li><strong>Android（Chrome）／桌面 Chrome、Edge：</strong>按下按鈕會直接跳出安裝確認視窗</li>
+      <li><strong>iPhone／iPad（Safari）：</strong>按下按鈕會提示改用「分享」圖示 → 「加入主畫面」</li>
+      <li><strong>Mac 桌面版 Safari：</strong>會提示改用選單列「檔案」→「加入 Dock」（Safari 17 以上）</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>隱私說明</h2>
+    <ul>
+      <li>你輸入的所有設定、分類與菜單資料都只存在自己瀏覽器的 localStorage，不會傳送到任何伺服器</li>
+      <li>上傳 CSV／Excel 時，檔案內容只在你的瀏覽器裡解析</li>
+      <li>AI 金鑰同樣只存在瀏覽器；按下「請 AI 診斷」且有填金鑰時，試算資料會直接送到你選擇的服務商官方 API</li>
+      <li>「上傳CSV／Excel」第一次使用時會從公開 CDN（cdnjs）載入解析元件</li>
+      <li>「重設為範例一」會覆蓋目前的設定與菜單，但不會動到 AI 服務商設定與金鑰</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>使用警語</h2>
+    <div class="warn">
+      <strong>請注意：</strong>
+      <ul>
+        <li>本工具的試算結果皆為<strong>估計值</strong>，不是正式財務報表，也不是專業財務、稅務或法律意見，不能取代會計師、記帳士或餐飲顧問</li>
+        <li>營業稅、外送平台抽成、金流手續費皆以固定比率概估；實際費率依稅籍身分、平台合約（含行銷方案、外送費分攤）與支付方式而定</li>
+        <li>試算未計入食材耗損、員工餐、折扣招待等變動因素，可自行把耗損攤入「食材成本」以更貼近實際</li>
+        <li>菜單工程矩陣為依銷量與單份毛利的簡化分類，僅供參考</li>
+        <li>上傳 CSV／Excel 會<strong>取代</strong>目前的菜單品項，請先自行備份</li>
+        <li>快速範例皆為虛構情境，不代表任何真實店家的實際數字</li>
+        <li>AI 生成的診斷內容可能包含錯誤，實際決策前務必自行查證；API 費用由你與所選服務商自行負擔</li>
+        <li>本工具與創作者不對依據本工具試算結果或 AI 診斷內容所做之任何定價、採購或經營決策負責</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>創作者資料</h2>
+    <p><strong>Mark Tsai（蔡豐全）</strong></p>
+    <p>聯絡信箱：<a href="mailto:tsaimark@gmail.com">tsaimark@gmail.com</a></p>
+
+    <h3>專長</h3>
+    <p>銷售數據分析、AI 工具運用、政府補助計畫申請、創業、跨境電商</p>
+
+    <h3>證照</h3>
+    <ul>
+      <li>青創總會 創業輔導顧問師班（2013）</li>
+      <li>青創總會 網路行銷講師培訓班（2014）</li>
+      <li>阿里巴巴 P4P 認證講師（2016）</li>
+      <li>iCap 訓練規劃與評量職能基準課程（2017）</li>
+      <li>iCap 職能導向課程申請認證實作班（2023）</li>
+      <li>iPAS AI 應用規劃師－初級（2025）</li>
+      <li>新北市社會局社區數位陪伴員（2025）</li>
+    </ul>
+
+    <h3>經歷</h3>
+    <ul>
+      <li>勞動力發展署桃竹苗分署 創業顧問（2017－迄今）</li>
+      <li>勞動力發展署（北北基）小型企業人力提升計畫 顧問（2019－迄今）</li>
+      <li>勞動力發展署（桃竹苗）小型企業人力提升計畫 顧問（2019－迄今）</li>
+      <li>農業部農業科技司「科技農企業雙軸轉型躍升發展」科技計畫 業師（2025－2026）</li>
+      <li>勞動力發展署 企業人力資源提升計畫 審查委員（2024）</li>
+      <li>勞動力發展署 職前訓練評鑑計畫 委員（2022）</li>
+      <li>勞動部桃竹苗分署－桃竹苗區域運籌人力資源整合服務計畫 顧問（2022－2023）</li>
+      <li>經濟部中小企業處 SBIR 海選專案 評審委員（2019－2024）</li>
+      <li>勞動力發展署 數位學習課程清單審查會議 審查委員（2024－2025）</li>
+      <li>輔仁大學創新跨領域學院 課務委員（2024－2025）</li>
+      <li>台北市進出口商業同業公會 跨境電商生態村 顧問</li>
+      <li>台灣網商協會 顧問</li>
+      <li>中華職能開發策進會 顧問（2018－2020）</li>
+      <li>新北市汽車美容人員職業工會 顧問（2023－迄今）</li>
+      <li>中華網路行銷講師協會 顧問（2022－迄今）</li>
+      <li>新北市社企電商基地 輔導顧問（2018－2020）</li>
+      <li>阿里巴巴國際站平台 認證講師（2016）</li>
+      <li>巨匠電腦 跨境電子商務班 講師（2016－2017）</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>授權與使用限制</h2>
+    <p>本工具僅供<strong>教學、課程及個人使用</strong>，禁止未經授權公開發布、販售或商業化使用。如需其他用途，請先取得創作者授權。</p>
+  </div>
+
+</main>
+
+<footer>
+  製作：Mark Tsai｜<a href="index.html">回到試算工具</a>
+</footer>
+
+</body>
+</html>
+
