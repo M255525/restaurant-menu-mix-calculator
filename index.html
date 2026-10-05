@@ -1019,6 +1019,17 @@ var WATERMARK_DATA_URI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAeAAAAE7
       div.innerHTML = '<span class="flow-label">' + r[0] + '</span><span class="flow-track"><span class="flow-fill" style="width:' + Math.min(Math.abs(pct),100).toFixed(1) + '%;background:' + r[2] + ';"></span></span><span class="flow-val">' + fmtPct(pct) + '・' + fmtMoney(r[1]) + '</span>';
       list.appendChild(div);
     });
+    var note = document.createElement("p");
+    note.className = "empty-note";
+    note.style.cssText = "margin:8px 0 0;text-align:left;";
+    note.textContent = taxShareNote();
+    list.appendChild(note);
+  }
+  // 營業稅率是對未稅價課；換算成「占含稅營收」會比稅率略低（5% → 5÷105≈4.8%）
+  function taxShareNote(){
+    var r = state.taxPct || 0;
+    if(!r) return "以上百分比皆以含稅月營收為分母。";
+    return "以上百分比皆以含稅月營收為分母。營業稅率 " + r + "% 是對未稅價課徵，換算成占含稅營收為 " + r + "÷" + (100 + r) + "≈" + (r / (100 + r) * 100).toFixed(1) + "%。";
   }
 
   function renderRestockTable(calc){
@@ -1561,7 +1572,7 @@ var WATERMARK_DATA_URI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAeAAAAE7
       ["叫貨前置天數", state.restockLeadDays + " 天"],
       ["備料庫存資金", fmtMoney(t.stockValue) + (state.capEnabled && state.capAmount > 0 ? "（上限 " + fmtMoney(state.capAmount) + (t.stockValue > state.capAmount ? "，已超過" : "") + "）" : "")]
     ];
-    html += '<div class="pr-cols"><div class="pr-section"><h2>每 100 元營收的去向（月）</h2><table class="pr-table"><thead><tr><th>項目</th><th>金額</th><th>占營收</th><th></th></tr></thead><tbody>' + flowRows + '</tbody></table></div>' +
+    html += '<div class="pr-cols"><div class="pr-section"><h2>每 100 元營收的去向（月）</h2><table class="pr-table"><thead><tr><th>項目</th><th>金額</th><th>占營收</th><th></th></tr></thead><tbody>' + flowRows + '</tbody></table><p class="pr-meta" style="margin-top:4px;">' + escapeHtml(taxShareNote()) + '</p></div>' +
       '<div class="pr-section"><h2>營運與費率設定</h2><table class="pr-table"><tbody>' + settings.map(function(s){ return '<tr>' + td(s[0]) + td(escapeHtml(s[1]), 1) + '</tr>'; }).join("") + '</tbody></table></div></div>';
 
     // 菜單工程矩陣（圖＋四象限清單）
